@@ -1,0 +1,220 @@
+Enter Students Record Page
+-------------------------------------------------------------------
+<!DOCTYPE html>
+<html>
+<head>
+<title>PHP insertion</title>
+<link href="css/insert.css" rel="stylesheet">
+</head>
+<body>
+<div class="maindiv">
+<!--HTML Form -->
+<div class="form_div">
+<div class="title">
+<h2><font face="comic sans ms">BTE Engineering College &nbsp&nbsp&nbsp <A HREF="BTE1.php"><font size="2"><font color="skyblue">Add Student</font></A>&nbsp|
+<A HREF="BTEretrieve.php"><font size="2"><font color="skyblue">List all Students</font></A></h2>
+</div>
+
+<!-- Method can be set as POST for hiding values in URL-->
+<h2>Add new Student Record</h2>
+<form method="POST" action="BTEinsert.php">
+<label><b>Full Name</b></label><br>
+<input class="input" name="name" type="text" value=""><br><br>
+<label><b>Residence Address</b></label><br>
+<textarea cols="25" name="address" rows="5"></textarea><br><br>
+<label><b>Gender</b></label><br>
+<input type="radio" name="Gender" value="male" checked> Male<br>
+<input type="radio" name="Gender" value="female"> Female<br><br>
+<label><b>Expected Year of Passing</b></label><br>
+<select name="Select Year">
+<option value=""Select Year">Select Year</option>
+<option value="2010">2010</option>
+<option value="2011">2011</option>
+<option value="2012">2012</option>
+<option value="2013">2013</option>
+<option value="2014">2014</option>
+<option value="2015">2015</option>
+<option value="2016">2016</option>
+</select><br><br>
+<label><b>Extra Curricular Interests</b></label><br>
+<input type="checkbox" name="Curricular" value="Sports"> Sports<br>
+<input type="checkbox" name="Curricular" value="Programming"> Programming<br>
+<input type="checkbox" name="Curricular" value="Arts"> Arts<br>
+<input type="checkbox" name="Curricular" value="Music"> Music<br><br>
+<input class="submit" name="submit" type="submit" value="Add">&nbsp&nbsp<A HREF="BTE1.php"><font size="3"><font color="skyblue">Cancel</font></A><br><br></font>
+</form>
+</div>
+</div>
+</body>
+</html>
+------------------------------------------------------------------------------------------
+
+Data insertion and connection file
+-------------------------------------------------------------------------------------------------------
+
+<?php 
+
+define('DB_HOST', 'localhost'); 
+define('DB_NAME', 'bte'); 
+define('DB_USER','root'); 
+define('DB_PASSWORD',''); 
+
+$connection = mysql_connect("localhost", "root", ""); 
+$db = mysql_select_db("bte", $connection); 
+
+if(isset($_POST['submit']))
+{ 
+         $fullname = $_POST['name']; 
+		 $address = $_POST['address']; 
+		 $query = "INSERT INTO student_record (fullname,address) VALUES ('$fullname','$address')"; 
+		 $data = mysql_query ($query)or die(mysql_error()); 
+		 if($data) 
+		 { 
+		 echo "YOUR REGISTRATION IS COMPLETED..."; 
+		 }  
+}
+?>
+-------------------------------------------------------------------------
+
+List of all students code
+-------------------------------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html>
+<head>
+<title>PHP insertion</title>
+<link href="css/insert.css" rel="stylesheet">
+</head>
+<body>
+<div class="maindiv">
+<!--HTML Form -->
+<div class="form_div">
+<div class="title">
+<h2><font face="comic sans ms">BTE Engineering College &nbsp&nbsp&nbsp <A HREF="BTE1.php"><font size="2"><font color="skyblue">Add Student</font></A>&nbsp|
+<A HREF="BTE1.php"><font size="2"><font color="skyblue">List all Students</font></A></h2>
+</div>
+<h2>List of Students</h2>
+<?php 
+
+define('DB_HOST', 'localhost'); 
+define('DB_NAME', 'bte'); 
+define('DB_USER','root'); 
+define('DB_PASSWORD',''); 
+
+$connection = mysql_connect("localhost", "root", ""); 
+$db = mysql_select_db("bte", $connection); 
+
+$find = "SELECT * FROM student_record";
+$query = mysql_query($find) or die (mysql_error());
+
+while($row = mysql_fetch_assoc($query))
+{
+	$var = $row['id'];
+	echo "</br>",$row['id'].".","&nbsp&nbsp&nbsp", $row['fullname'];
+	//$link_address = 'BTEupdate.php';
+	echo '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="BTEupdate.php">Edit</a>';echo '<a href ="BTE1.php">|&nbspDelete</a>';
+	//echo $row['fullname']."<br/>";
+	
+	
+}
+?>
+<form method="POST" action="BTE1.php">
+<br><input class="submit" name="submit" type="submit" value="Add Student">
+</form>
+</body>
+</html>
+-----------------------------------------------------------------------------------------------------------------------
+Update the student Record
+-------------------------------------------------------------------------------
+<body>
+<div class="maindiv">
+<!--HTML Form -->
+<div class="form_div">
+<div class="title">
+<h2><font face="comic sans ms">BTE Engineering College &nbsp&nbsp&nbsp <A HREF="BTE1.php"><font size="2"><font color="skyblue">Add Student</font></A>&nbsp|
+<A HREF="BTE1.php"><font size="2"><font color="skyblue">List all Students</font></A></h2>
+</div>
+<h2>Edit Student Record</h2>
+<?php 
+
+define('DB_HOST', 'localhost'); 
+define('DB_NAME', 'bte'); 
+define('DB_USER','root'); 
+define('DB_PASSWORD',''); 
+
+$connection = mysql_connect("localhost", "root", ""); 
+$db = mysql_select_db("bte", $connection); 
+
+//$fullname = $_Get['fullname'];
+//$query="SELECT * FROM student_record WHERE id = '$id'";
+$query = mysql_query("SELECT * FROM student_record WHERE fullname = '$fullname'") or die (mysql_error());
+
+while($row = mysql_fetch_array($query)) {
+        $fullname = $row['fullname'];
+        $address = $row['address'];
+        $gender = $row['gender'];
+        $year = $row['year'];
+		$curricular = $row['curricular'];
+}
+?>
+<form action="update.php" method="post">
+<input type="hidden" name="id" value="<?=$id;?>">
+<label><b>Full Name</b></label><br>
+<input class="input" name="name" type="text" value=""><br><br>
+<label><b>Residence Address</b></label><br>
+<textarea cols="25" name="address" rows="5"></textarea><br><br>
+<label><b>Gender</b></label><br>
+<input type="radio" name="Gender" value="male" checked> Male<br>
+<input type="radio" name="Gender" value="female"> Female<br><br>
+<label><b>Expected Year of Passing</b></label><br>
+<select name="Select Year">
+<option value=""Select Year">Select Year</option>
+<option value="2010">2010</option>
+<option value="2011">2011</option>
+<option value="2012">2012</option>
+<option value="2013">2013</option>
+<option value="2014">2014</option>
+<option value="2015">2015</option>
+<option value="2016">2016</option>
+</select><br><br>
+<label><b>Extra Curricular Interests</b></label><br>
+<input type="checkbox" name="Curricular" value="Sports"> Sports<br>
+<input type="checkbox" name="Curricular" value="Programming"> Programming<br>
+<input type="checkbox" name="Curricular" value="Arts"> Arts<br>
+<input type="checkbox" name="Curricular" value="Music"> Music<br><br>
+<input class="submit" name="submit" type="submit" value="Update">&nbsp&nbsp<A HREF="BTE1.php"><font size="3"><font color="skyblue">Cancel</font></A><br><br></font>
+</form>
+</body>
+-------------------------------------------------------
+Update
+--------------------------------------------------------------------
+<?php
+    define('DB_HOST', 'localhost'); 
+define('DB_NAME', 'bte'); 
+define('DB_USER','root'); 
+define('DB_PASSWORD',''); 
+
+$connection = mysql_connect("localhost", "root", ""); 
+$db = mysql_select_db("bte", $connection); 
+
+    $id = (int)$_POST["id"];
+
+    $fullname = mysql_real_escape_string($_POST["fullname"]);
+    $address = mysql_real_escape_string($_POST["address"]);
+    $gender = mysql_real_escape_string($_POST["gender"]);
+    $year = mysql_real_escape_string($_POST["year"]);
+	$curricular = mysql_real_escape_string($_POST["curricular"]);
+
+
+    $query="UPDATE student_record
+            SET fullname = '$fullname', address = '$address', gender = '$gender', year = '$year', curricular = '$curricular'
+            WHERE id='$id'";
+
+
+mysql_query($query)or die(mysql_error());
+if(mysql_affected_rows()>=1){
+    echo "<p>($id) Record Updated<p>";
+}else{
+    echo "<p>($id) Not Updated<p>";
+}
+?>
+-----------------------------------------------------------------------------------------
